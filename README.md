@@ -1,33 +1,44 @@
-# mvp
+# download
 
-<!-- !["It's dangerous to go alone! Take this."](static/image.jpg) -->
-<!-- <img src="https://user-images.githubusercontent.com/4097471/144654508-823c6e31-5e10-404c-9f9f-0d6b9d6ce617.jpg" width="300"> -->
-
-**minimum viable python**
+[**Download**](https://www.youtube.com/watch?v=T5jHO4jMPxA)  
+<img src="static/sfa_radiator.png" width="300">
 
 ## Summary
+Feed `requests` a URL, extension, and local directory to download files scraped from a website.
 
-Sets up a new development environment for a Mac or Linux (i.e., UNIX) box.
+Cache initial response to avoid too many requests to server.
 
 **Table of Contents**
-* [mvp](#mvp)
+* [download](#download)
   * [Summary](#summary)
   * [Setup](#setup)
   * [Quickstart](#quickstart)
+  * [Development](#development)
   * [TODO](#todo)
   * [Further Reading](#further-reading)
 
 ## Setup
-
 * Install
   * make
-    * [Debian/Ubuntu](https://www.gnu.org/software/make/)
+    * [Linux](https://www.gnu.org/software/make/)
     * [macOS](https://www.freecodecamp.org/news/install-xcode-command-line-tools/)
   * [editorconfig](https://editorconfig.org/)
-  * [wsl](https://docs.microsoft.com/en-us/windows/wsl/setup/environment)
 
 ## Quickstart
+```bash
+# run script with defaults
+./main.py
 
+# add environment variables for url, ext, and path
+cp .env.example .env
+
+# fill out (e.g., 'EXT=".csv"')
+
+# run with overrides
+./main.py
+```
+
+## Development
 ```bash
 # install dependencies (e.g., git, ansible, etc.)
 ./bootstrap install
@@ -44,18 +55,7 @@ Sets up a new development environment for a Mac or Linux (i.e., UNIX) box.
 
 ## TODO
 
-* [Open Issues](https://github.com/pythoninthegrass/mvp/issues)
-* QA [Ansible playbook](ansible/playbook.yml)
-  * Test
-    * macOS
-    * Ubuntu
-* Write boilerplate pytest tests
-* CI/CD
+* [Open Issues](https://github.com/pythoninthegrass/download/issues)
 
 ## Further Reading
-
-* [python](https://www.python.org/)
-* [asdf](https://asdf-vm.com/guide/getting-started.html#_2-download-asdf)
-* [poetry](https://python-poetry.org/docs/)
-* [docker-compose](https://docs.docker.com/compose/install/)
-* [pre-commit hooks](https://pre-commit.com/)
+ TODO
