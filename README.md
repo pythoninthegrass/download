@@ -18,11 +18,16 @@ Cache initial response to avoid too many requests to server.
   * [Further Reading](#further-reading)
 
 ## Setup
-* Install
+* Dependencies
   * make
     * [Linux](https://www.gnu.org/software/make/)
     * [macOS](https://www.freecodecamp.org/news/install-xcode-command-line-tools/)
   * [editorconfig](https://editorconfig.org/)
+* Install python and tooling
+    ```bash
+    # install python and dependencies (e.g., git, ansible, etc.)
+    ./bootstrap install
+    ```
 
 ## Quickstart
 ```bash
@@ -40,9 +45,6 @@ cp .env.example .env
 
 ## Development
 ```bash
-# install dependencies (e.g., git, ansible, etc.)
-./bootstrap install
-
 # install tools and runtimes (cf. xcode, brew, asdf, poetry, etc.)
 ./bootstrap <run|run-dev>   # dev only runs plays w/tags and is verbose
 
@@ -54,8 +56,11 @@ cp .env.example .env
 ```
 
 ## TODO
-
 * [Open Issues](https://github.com/pythoninthegrass/download/issues)
 
 ## Further Reading
- TODO
+* [python](https://www.python.org/)
+* [asdf](https://asdf-vm.com/guide/getting-started.html#_2-download-asdf)
+* [poetry](https://python-poetry.org/docs/)
+* [docker-compose](https://docs.docker.com/compose/install/)
+* [pre-commit hooks](https://pre-commit.com/)
