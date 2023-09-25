@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import anyio
+import asyncio
 import httpx
 import os
 # import requests
@@ -27,6 +28,7 @@ if not ttl:
     min = 5
     sec = 60
     ttl = min * sec
+# TODO: migrate to httpx-cache
 # requests_cache.install_cache(f"{name}_cache", backend="sqlite", expire_after=ttl)
 
 headers = {
@@ -56,15 +58,25 @@ def read_html(html):
     return links
 
 
+async def download_file_async(client, file, path):
+    """Download a single file asynchronously."""
+    filename = Path(file).name
+    res = await client.get(file, headers=headers)
+    print(f"Saving {filename}.")
+    with open(Path(path) / filename, "wb") as f:
+        f.write(res.content)
+
+
 # TODO: use sys.argv to pass in args vs. env vars
-async def download_file(links, ext=ext, path=dir):
+async def queue(links, ext=ext, path=dir):
     """Download file from url and save as filename."""
 
     count = 0
 
     # create an async client
     async with httpx.AsyncClient() as client:
-        # download the file
+        # download the files concurrently
+        tasks = []
         for file in links:
             try:
                 filename = Path(file).name
@@ -73,12 +85,13 @@ async def download_file(links, ext=ext, path=dir):
                     continue
                 else:
                     count += 1
-                    res = await client.get(file, headers=headers)
-                    print(f"Saving {filename}.")
-                    with open(Path(path) / filename, "wb") as f:
-                        f.write(res.content)
+                    task = asyncio.create_task(download_file_async(client, file, path))
+                    tasks.append(task)
             except httpx.HTTPError as e:
                 print(f"HTTP Exception for {e.request.url}: {e}")
+
+        # wait for all tasks to complete
+        await asyncio.gather(*tasks)
 
     print(f"Total files downloaded: {count} out of {len(links)}.")
 
@@ -98,9 +111,8 @@ async def main():
     links = [urljoin(url, file.get("href")) for file in files]
 
     # download the files
-    await download_file(links)
+    await queue(links)
 
 
 if __name__ == "__main__":
-    # main()
     anyio.run(main)
