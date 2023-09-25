@@ -63,7 +63,6 @@ def download_file(url=url, ext=ext, path=dir):
     # print number of links
     total = [link for link in links if link.get("href").endswith(ext)]
 
-    # TODO: flip logic to check if file exists, then download
     # loop through the links, verify the extension, and download the file
     count = 0
     for item in links:
@@ -81,7 +80,7 @@ def download_file(url=url, ext=ext, path=dir):
                 # save the file if it doesn't exist
                 filename = Path(file).name
 
-                if Path(path) / filename:
+                if Path(f"{path}/{filename}").exists():
                     print(f"{filename} already exists.")
                     continue
                 else:
@@ -98,7 +97,7 @@ def main():
     Path(dir).mkdir(exist_ok=True)
 
     # invalidate the cache (for testing)
-    # requests_cache.clear()
+    requests_cache.clear()
 
     # download the file
     download_file(url)
