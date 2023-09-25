@@ -97,6 +97,7 @@ async def queue(links, ext=ext, path=dir):
 
 
 async def main():
+    # TODO: replace w/httpx-cache invalidate
     # invalidate the cache (for testing)
     # requests_cache.clear()
 
