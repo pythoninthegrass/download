@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
-import requests
-import requests_cache
+import anyio
+import httpx
+import os
+# import requests
+# import requests_cache
 # import sys
 from bs4 import BeautifulSoup
 from decouple import config
@@ -16,24 +19,27 @@ dir = config("DOWNLOAD_DIR", default="data")
 ext = config("EXT", default=".gz")
 ttl = config("TTL", default=300)
 
+# create a directory for the data
+Path(dir).mkdir(exist_ok=True)
+
 # cache the requests to sqlite, expire after n time
 if not ttl:
     min = 5
     sec = 60
     ttl = min * sec
-requests_cache.install_cache(f"{name}_cache", backend="sqlite", expire_after=ttl)
+# requests_cache.install_cache(f"{name}_cache", backend="sqlite", expire_after=ttl)
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0"
+}
+client = httpx.Client()
 
 
 def get_html(url):
     """Return the html from the url."""
 
-    # headers
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0"
-    }
-
     # parse url
-    res = requests.get(url, headers=headers)
+    res = client.get(url, headers=headers)
 
     return res
 
@@ -51,57 +57,50 @@ def read_html(html):
 
 
 # TODO: use sys.argv to pass in args vs. env vars
-def download_file(url=url, ext=ext, path=dir):
+async def download_file(links, ext=ext, path=dir):
     """Download file from url and save as filename."""
 
-    # get the raw html
-    res = get_html(url)
-
-    # read the html
-    links = read_html(res.text)
-
-    # print number of links
-    total = [link for link in links if link.get("href").endswith(ext)]
-
-    # loop through the links, verify the extension, and download the file
     count = 0
-    for item in links:
-        href = item.get("href")
-        if href.endswith(ext):
-            file = urljoin(url, href)
-            res = requests.get(file)
 
-            if res.status_code != 200:
-                ic(res.status_code)
-                ic(res.reason)
-                ic(res.text)
-                continue
-            else:
-                # save the file if it doesn't exist
+    # create an async client
+    async with httpx.AsyncClient() as client:
+        # download the file
+        for file in links:
+            try:
                 filename = Path(file).name
-
                 if Path(f"{path}/{filename}").exists():
                     print(f"{filename} already exists.")
                     continue
                 else:
                     count += 1
+                    res = await client.get(file, headers=headers)
                     print(f"Saving {filename}.")
                     with open(Path(path) / filename, "wb") as f:
                         f.write(res.content)
+            except httpx.HTTPError as e:
+                print(f"HTTP Exception for {e.request.url}: {e}")
 
-    print(f"Total files downloaded: {count} out of {len(total)}.")
+    print(f"Total files downloaded: {count} out of {len(links)}.")
 
 
-def main():
-    # create a directory for the data
-    Path(dir).mkdir(exist_ok=True)
-
+async def main():
     # invalidate the cache (for testing)
-    requests_cache.clear()
+    # requests_cache.clear()
 
-    # download the file
-    download_file(url)
+    # get the raw html
+    res = get_html(url)
+
+    # read the html
+    html = read_html(res.text)
+
+    # loop through the links, verify the extension, and create a list of files
+    files = (link for link in html if link.get("href").endswith(ext))
+    links = [urljoin(url, file.get("href")) for file in files]
+
+    # download the files
+    await download_file(links)
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    anyio.run(main)
