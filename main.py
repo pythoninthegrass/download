@@ -14,7 +14,7 @@ name = config("NAME", default="noaa")
 url = config("URL", default="https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/")
 dir = config("DOWNLOAD_DIR", default="data")
 ext = config("EXT", default=".gz")
-ttl = config("TTL")
+ttl = config("TTL", default=300)
 
 # cache the requests to sqlite, expire after n time
 if not ttl:
