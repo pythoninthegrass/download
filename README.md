@@ -13,6 +13,8 @@ Cache initial response to avoid too many requests to server.
   * [Summary](#summary)
   * [Setup](#setup)
   * [Quickstart](#quickstart)
+    * [Demo](#demo)
+    * [Usage](#usage)
   * [Development](#development)
   * [TODO](#todo)
   * [Further Reading](#further-reading)
@@ -30,6 +32,10 @@ Cache initial response to avoid too many requests to server.
     ```
 
 ## Quickstart
+### Demo
+<img src="static/demo.mp4" width="300">
+
+### Usage
 ```bash
 # run script with defaults
 ./main.py
