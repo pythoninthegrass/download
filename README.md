@@ -33,7 +33,7 @@ Cache initial response to avoid too many requests to server.
 
 ## Quickstart
 ### Demo
-<img src="static/demo.mp4" width="300">
+<img src="static/demo.gif" width="850">
 
 ### Usage
 ```bash
